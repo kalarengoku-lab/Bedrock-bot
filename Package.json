@@ -9,3 +9,6 @@
     "bedrock-protocol": "^3.30.0"
   }
 }
+"scripts": {
+  "start": "node bot.js"
+}
