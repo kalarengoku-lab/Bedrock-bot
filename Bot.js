@@ -1,5 +1,12 @@
 const { createClient } = require('bedrock-protocol')
 
+console.log("Bot starting...")
+
+if (!process.env.HOST) {
+  console.log("❌ HOST not set in environment variables")
+  process.exit(1)
+}
+
 function startBot() {
   const client = createClient({
     host: process.env.HOST,
@@ -7,24 +14,21 @@ function startBot() {
     username: process.env.USERNAME || 'AFK_Bot'
   })
 
-  client.on('join', () => {
-    console.log('✅ Bot joined server')
-  })
+  client.on('connect', () => console.log("Connecting..."))
 
-  client.on('spawn', () => {
-    console.log('🎮 Spawned')
-  })
+  client.on('join', () => console.log("✅ Joined server"))
+
+  client.on('spawn', () => console.log("🎮 Spawned"))
 
   client.on('disconnect', () => {
-    console.log('❌ Disconnected, retrying...')
+    console.log("❌ Disconnected → retrying")
     setTimeout(startBot, 5000)
   })
 
   client.on('error', (err) => {
-    console.log('⚠️ Error:', err.message)
+    console.log("⚠️ Error:", err.message)
   })
 
-  // Anti-AFK
   setInterval(() => {
     try {
       client.queue('player_action', { action: 0 })
